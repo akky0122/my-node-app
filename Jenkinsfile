@@ -12,7 +12,7 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        stage('Deploy') {
+     /*   stage('Deploy') {
             steps {
                 sh '''
                     # Copy WAR file to Tomcat webapps directory
@@ -22,7 +22,13 @@ pipeline {
                     # Copy WAR file to Linux EC2 instance
                     scp -i /path/to/ssh/key.pem target/*.war ec2-user@<ec2-instance-ip>:/home/ec2-user/
                 '''
-            }
-        }
+                */
+                stage ('deploy to dev') {
+             steps {
+                  sshagent(['user-deployer']) {
+                  sh "scp -o StrictHostKeyChecking=no */target/*.war ec2-user@3.111.40.171:/usr/local/tomcat/webapps/"
+} } }
+            
+        
     }
 }
