@@ -16,7 +16,7 @@ pipeline {
                 TOMCAT_CONTAINER = 'my-tomcat'
             }
             steps {
-                sh 'docker run -d --name ${TOMCAT_CONTAINER} -p 8080:8080 tomcat:9.0'
+                sh 'docker run -d --name ${TOMCAT_CONTAINER} -p 8081:8081 tomcat:9.0'
                 sh 'docker cp target/myapp.war ${TOMCAT_CONTAINER}:/usr/local/tomcat/webapps/'
             }
         }
