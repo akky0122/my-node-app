@@ -22,10 +22,12 @@ pipeline {
             steps {
                 // Write Dockerfile contents to a file
                 sh '''
-                    cat << EOF > Dockerfile
-                    FROM tomcat:9.0
-                    COPY target/myapp.war /usr/local/tomcat/webapps/
-                    EOF
+                cat << EOF > Dockerfile
+                FROM tomcat:9-jdk11-openjdk
+                COPY myapp.war /usr/local/tomcat/webapps/
+                EXPOSE 8081
+                CMD ["catalina.sh", "run"]
+                EOF
                 '''
             }
     }
