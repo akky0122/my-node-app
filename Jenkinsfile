@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            container 'maven:3.8.3-jdk-11'
+            image 'maven:3.8.3-jdk-11'
             args '-v /root/.m2:/root/.m2'
         }
     }
@@ -12,22 +12,16 @@ pipeline {
             }
         }
         stage('Deploy') {
-            environment {
-                TOMCAT_CONTAINER = 'my-tomcat'
-            }
             steps {
-                sh 'docker run -d --name ${TOMCAT_CONTAINER} -p 8081:8081 tomcat:9.0'
-                sh 'docker cp target/myapp.war ${TOMCAT_CONTAINER}:/usr/local/tomcat/webapps/'
+                sh 'docker run -d --name my-tomcat -p 8081:8080 tomcat:9.0'
+                sh 'docker cp target/myapp.war my-tomcat:/usr/local/tomcat/webapps/'
             }
         }
     }
     post {
         always {
-            when {
-                stage(name: 'Deploy', result: 'SUCCESS')
-            }
-            sh 'docker stop ${TOMCAT_CONTAINER}'
-            sh 'docker rm ${TOMCAT_CONTAINER}'
+            sh 'docker stop my-tomcat'
+            sh 'docker rm my-tomcat'
         }
     }
 }
