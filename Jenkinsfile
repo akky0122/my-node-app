@@ -1,31 +1,39 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.8.3-jdk-11'
-            args '-v /root/.m2:/root/.m2'
-        }
+  agent any
+
+  stages {
+    stage('Checkout SCM') {
+      steps {
+        checkout scm
+      }
     }
-    stages {
-        stage('Build') {
-            steps {
-                sh 'mvn clean package -DskipTests'
-            }
-        }
-        stage('Deploy') {
-            environment {
-                TOMCAT_CONTAINER = 'my-tomcat'
-            }
-            steps {
-                sh 'docker run -d --name ${TOMCAT_CONTAINER} -p 8080:8080 tomcat:9.0'
-                sh 'docker cp target/myapp.war ${TOMCAT_CONTAINER}:/usr/local/tomcat/webapps/'
-            }
-        }
+    
+    stage('Build and package app') {
+      environment {
+        MAVEN_HOME = tool 'Maven'
+        PATH = "$MAVEN_HOME/bin:${env.PATH}"
+      }
+      steps {
+        sh 'mvn clean package'
+      }
     }
-    post {
-        always {
-            //sh 'docker stop ${TOMCAT_CONTAINER}'
-            //sh 'docker rm ${TOMCAT_CONTAINER}'
-               cleanWs()
-        }
+    
+    stage('Build Docker image') {
+      steps {
+        sh 'docker build -t myapp:latest .'
+      }
     }
+    
+    stage('Run Docker container') {
+      steps {
+        sh 'docker run -d -p 8080:8080 myapp:latest'
+      }
+    }
+  }
+
+  post {
+    always {
+      cleanWs()
+    }
+  }
 }
