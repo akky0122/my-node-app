@@ -21,7 +21,8 @@ pipeline {
     stage('Create Docker Image') {
             steps {
                 // Write Dockerfile contents to a file
-             sh 'echo "FROM tomcat:9-jdk11-openjdk\nCOPY myapp.war /usr/local/tomcat/webapps/\nEXPOSE 8081\nCMD [\"catalina.sh\", \"run\"]" > Dockerfile'
+             sh 'echo "FROM tomcat:9-jdk11-openjdk\nCOPY /var/jenkins_home/workspace/build-myapp/target/myapp.war /usr/local/tomcat/webapps/\nEXPOSE 8081\nCMD [\"catalina.sh\", \"run\"]" > Dockerfile'
+
             }
     }
     
