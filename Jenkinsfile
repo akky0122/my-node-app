@@ -26,7 +26,7 @@ pipeline {
                 stage ('deploy to dev') {
              steps {
                   sshagent(['user-deployer']) {
-                  sh "scp -o StrictHostKeyChecking=no */target/*.jar ec2-user@3.111.40.171:/usr/local/tomcat/webapps/"
+                  sh "scp -o StrictHostKeyChecking=no /var/jenkins_home/workspace/test-jenkinsfile/target/*.jar ec2-user@3.111.40.171:/opt/containerd/"
 } } }
             
         
