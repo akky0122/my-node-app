@@ -23,8 +23,9 @@ pipeline {
     }
     post {
         always {
-            sh 'docker stop ${TOMCAT_CONTAINER}'
-            sh 'docker rm ${TOMCAT_CONTAINER}'
+            //sh 'docker stop ${TOMCAT_CONTAINER}'
+            //sh 'docker rm ${TOMCAT_CONTAINER}'
+               cleanWs()
         }
     }
 }
