@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3.8.3-jdk-11'
+            container 'maven:3.8.3-jdk-11'
             args '-v /root/.m2:/root/.m2'
         }
     }
@@ -23,6 +23,9 @@ pipeline {
     }
     post {
         always {
+            when {
+                stage(name: 'Deploy', result: 'SUCCESS')
+            }
             sh 'docker stop ${TOMCAT_CONTAINER}'
             sh 'docker rm ${TOMCAT_CONTAINER}'
         }
